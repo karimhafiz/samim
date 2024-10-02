@@ -8,12 +8,9 @@ import {
 } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import {
-  ClipboardDocumentListIcon,
-  DocumentTextIcon,
   LanguageIcon,
   PhoneIcon,
   EnvelopeIcon,
-  MapPinIcon,
   Bars3Icon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -21,7 +18,6 @@ import {
 // Lazy load components
 const Services = lazy(() => import("./components/Services"));
 const Contact = lazy(() => import("./components/Contact"));
-
 function ScrollToTop() {
   const { pathname } = useLocation();
 
