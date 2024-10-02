@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -18,6 +18,10 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
+// Lazy load components
+const Services = lazy(() => import("./components/Services"));
+const Contact = lazy(() => import("./components/Contact"));
+
 function ScrollToTop() {
   const { pathname } = useLocation();
 
@@ -28,7 +32,7 @@ function ScrollToTop() {
   return null;
 }
 
-function SEO({ title, description, canonicalUrl }) {
+function SEO({ title, description, canonicalUrl, schema }) {
   return (
     <Helmet>
       <title>{title}</title>
@@ -41,6 +45,7 @@ function SEO({ title, description, canonicalUrl }) {
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
+      <script type="application/ld+json">{JSON.stringify(schema)}</script>
     </Helmet>
   );
 }
@@ -64,14 +69,44 @@ function App() {
     }
   };
 
+  const schemaData = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "Samim Services",
+    description: "Assistance with forms, documents, and communication",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "123 Main Street",
+      addressLocality: "City",
+      addressCountry: "Country",
+    },
+    telephone: "123-456-7890",
+    email: "help@samimservices.com",
+    url: "https://www.samimservices.com",
+    sameAs: [
+      "https://www.facebook.com/samimservices",
+      "https://www.linkedin.com/company/samimservices",
+      "https://twitter.com/samimservices",
+    ],
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+        opens: "09:00",
+        closes: "17:00",
+      },
+    ],
+  };
+
   return (
     <Router>
       <ScrollToTop />
       <div className="flex flex-col min-h-screen">
         <SEO
-          title="Samim Services - Assistance with Forms, Documents, and Communication"
-          description="Samim Services helps with form filling, document translation, and phone call assistance for those who need support with paperwork and communication."
+          title="Samim Services - Expert Assistance with Forms, Documents, and Communication"
+          description="Samim Services provides professional help with form filling, document translation, and phone call assistance. We support individuals and businesses with efficient paperwork and clear communication."
           canonicalUrl="https://www.samimservices.com"
+          schema={schemaData}
         />
         <header className="px-4 lg:px-6 h-16 flex items-center justify-between bg-white shadow-md fixed w-full z-10">
           <Link
@@ -179,87 +214,10 @@ function App() {
                       </div>
                     </div>
                   </section>
-                  <section
-                    id="services"
-                    className="w-full py-12 md:py-24 lg:py-32 bg-white"
-                  >
-                    <div className="container mx-auto px-4 md:px-6">
-                      <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12">
-                        Our Services
-                      </h2>
-                      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-                        <div className="flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                          <ClipboardDocumentListIcon className="h-16 w-16 text-blue-600 mb-4" />
-                          <h3 className="text-xl font-bold mb-2">
-                            Form Filling
-                          </h3>
-                          <p className="text-gray-600">
-                            We help you fill out important forms correctly and
-                            quickly.
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                          <DocumentTextIcon className="h-16 w-16 text-blue-600 mb-4" />
-                          <h3 className="text-xl font-bold mb-2">
-                            Document Translation
-                          </h3>
-                          <p className="text-gray-600">
-                            We translate your documents to help you understand
-                            them better.
-                          </p>
-                        </div>
-                        <div className="flex flex-col items-center text-center p-6 bg-gray-50 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                          <PhoneIcon className="h-16 w-16 text-blue-600 mb-4" />
-                          <h3 className="text-xl font-bold mb-2">
-                            Phone Call Assistance
-                          </h3>
-                          <p className="text-gray-600">
-                            We help you make important phone calls and explain
-                            things clearly.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
-                  <section
-                    id="contact"
-                    className="w-full py-12 md:py-24 lg:py-32 bg-gray-100"
-                  >
-                    <div className="container mx-auto px-4 md:px-6">
-                      <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl text-center mb-12">
-                        Contact Us
-                      </h2>
-                      <div className="mx-auto max-w-lg space-y-8">
-                        <div className="flex flex-col items-center space-y-2 p-6 bg-white rounded-lg shadow-sm">
-                          <PhoneIcon className="h-8 w-8 text-blue-600" />
-                          <p className="text-xl font-semibold">Phone</p>
-                          <a
-                            href="tel:123-456-7890"
-                            className="text-lg text-blue-600 hover:text-blue-800 transition-colors"
-                          >
-                            123-456-7890
-                          </a>
-                        </div>
-                        <div className="flex flex-col items-center space-y-2 p-6 bg-white rounded-lg shadow-sm">
-                          <EnvelopeIcon className="h-8 w-8 text-blue-600" />
-                          <p className="text-xl font-semibold">Email</p>
-                          <a
-                            href="mailto:help@samimservices.com"
-                            className="text-lg text-blue-600 hover:text-blue-800 transition-colors"
-                          >
-                            help@samimservices.com
-                          </a>
-                        </div>
-                        <div className="flex flex-col items-center space-y-2 p-6 bg-white rounded-lg shadow-sm">
-                          <MapPinIcon className="h-8 w-8 text-blue-600" />
-                          <p className="text-xl font-semibold">Address</p>
-                          <p className="text-lg text-center">
-                            123 Main Street, City, Country
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </section>
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <Services />
+                    <Contact />
+                  </Suspense>
                 </>
               }
             />
@@ -273,15 +231,15 @@ function App() {
             <nav className="flex gap-4 sm:gap-6">
               <Link
                 className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                to="#"
+                to="/terms"
               >
                 Terms of Service
               </Link>
               <Link
                 className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                to="#"
+                to="/privacy"
               >
-                Privacy
+                Privacy Policy
               </Link>
             </nav>
           </div>
